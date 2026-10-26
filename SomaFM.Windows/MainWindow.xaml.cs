@@ -143,6 +143,8 @@ public partial class MainWindow : Window
             trayPaletteMenu.DropDownItems.Add(item);
         }
         menu.Items.Add(trayPaletteMenu);
+        menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add(new ToolStripMenuItem(VersionLabel) { Enabled = false });
         menu.Items.Add("Exit", null, (_, _) => ExitApplication());
         _trayIcon.ContextMenuStrip = menu;
         ConfigureOptionsMenu();
@@ -228,8 +230,13 @@ public partial class MainWindow : Window
             paletteMenu.Items.Add(item);
         }
         menu.Items.Add(paletteMenu);
+        menu.Items.Add(new Separator());
+        menu.Items.Add(new System.Windows.Controls.MenuItem { Header = VersionLabel, IsEnabled = false });
         OptionsButton.ContextMenu = menu;
     }
+
+    private static string VersionLabel =>
+        $"SomaFM v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)}";
 
     private void AddWindowSortItem(System.Windows.Controls.MenuItem parent, StationSortOrder order, string label)
     {
