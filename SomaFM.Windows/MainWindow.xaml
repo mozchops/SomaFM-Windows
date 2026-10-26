@@ -157,7 +157,7 @@
         <TextBlock x:Name="ListeningTimeLabel" Grid.Column="4" Text="00:00:00" MinWidth="50" TextAlignment="Center"
                    VerticalAlignment="Center" HorizontalAlignment="Center"
                    Foreground="#C7CDD1" FontSize="9" FontWeight="SemiBold" Margin="0,0,8,0"
-                   Background="Transparent" Cursor="Hand" MouseLeftButtonUp="ListeningTimeLabel_MouseLeftButtonDown" />
+                   Background="Transparent" Cursor="Hand" MouseLeftButtonDown="ListeningTimeLabel_MouseLeftButtonDown" />
 
         <Button x:Name="FavoriteButton" Grid.Column="5" Content="☆" Click="FavoriteButton_Click"
           Width="24" Height="24" Padding="0" VerticalAlignment="Center"
