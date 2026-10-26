@@ -11,6 +11,7 @@ public sealed class SomaFmClient
     private static readonly Regex ChannelIdPattern = new("^[a-z0-9][a-z0-9-]{0,47}$", RegexOptions.Compiled);
     private static readonly Regex StreamHostPattern = new("^ice[0-9]+\\.somafm\\.com$", RegexOptions.Compiled);
     private static readonly Regex BitratePattern = new("(?:-|/)([0-9]{2,3})-(?:mp3|aacp?|ogg|opus)$|([0-9]{2,3})\\.(?:mp3|aacp?|ogg|opus)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex ImagePathPattern = new("^/logos/120/[A-Za-z0-9-]+120\\.(png|jpe?g|gif)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public async Task<IReadOnlyList<Station>> GetStationsAsync(CancellationToken cancellationToken = default)
     {
@@ -41,7 +42,7 @@ public sealed class SomaFmClient
             var title = Clean(GetString(channel, "title"), 100);
             stations.Add(new Station(id, title.Length > 0 ? title : id,
                 Clean(GetString(channel, "description"), 280), Clean(GetString(channel, "genre"), 60),
-                ParseBitrate(streamUrl), streamUrl));
+                ValidImageUrl(GetString(channel, "image")), ParseBitrate(streamUrl), streamUrl));
         }
         return stations.OrderBy(station => station.Title, StringComparer.CurrentCultureIgnoreCase).ToArray();
     }
@@ -99,6 +100,15 @@ public sealed class SomaFmClient
             return 0;
         var match = BitratePattern.Match(uri.AbsolutePath);
         return int.TryParse(match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value, out var rate) ? rate : 0;
+    }
+
+    private static string ValidImageUrl(string value)
+    {
+        if (value.Length > 300 || !Uri.TryCreate(value, UriKind.Absolute, out var uri)
+            || uri.Scheme != Uri.UriSchemeHttps || uri.Host != "api.somafm.com" || uri.Port != 443
+            || !ImagePathPattern.IsMatch(uri.AbsolutePath))
+            return "";
+        return uri.AbsoluteUri;
     }
 
     private static string GetString(JsonElement element, string name) =>

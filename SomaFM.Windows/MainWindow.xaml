@@ -1,63 +1,156 @@
 <Window x:Class="SomaFM.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SomaFM" Width="460" Height="720" MinWidth="400" MinHeight="560"
-        Background="{StaticResource SurfaceBrush}" Foreground="#202020"
-        Closing="Window_Closing">
-  <Grid Margin="18">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-      <RowDefinition Height="Auto" />
-    </Grid.RowDefinitions>
-    <DockPanel Grid.Row="0" Margin="0,0,0,14">
-      <Button DockPanel.Dock="Right" Content="Refresh" Click="Refresh_Click" />
-      <StackPanel>
-        <TextBlock Text="SomaFM" FontSize="21" FontWeight="SemiBold" />
-        <TextBlock x:Name="StatusText" Text="Connecting to the station catalog…" Foreground="#666" Margin="0,3,0,0" />
-      </StackPanel>
-    </DockPanel>
-    <Border Grid.Row="1" Background="#F1EFEC" CornerRadius="5" Padding="12" Margin="0,0,0,10">
-      <Grid>
+        Title="SomaFM" Width="760" Height="32" MinWidth="720" MinHeight="32" MaxHeight="32"
+        WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True"
+        Background="Transparent" ShowInTaskbar="False" Topmost="True"
+        WindowStartupLocation="Manual" Loaded="Window_Loaded" Closing="Window_Closing">
+  <Window.Resources>
+    <Style x:Key="PlayButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="3" SnapsToDevicePixels="True">
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="ButtonBorder" Property="Background" Value="#000000" />
+                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#000000" />
+                <Setter Property="Foreground" Value="#F08A62" />
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="ButtonBorder" Property="Background" Value="#171B1D" />
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="ButtonBorder" Property="Background" Value="#000000" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
+  <Grid Background="Transparent">
+    <Border x:Name="BarSurface" Margin="2" Background="#101214" BorderBrush="#2B3034"
+            BorderThickness="1" CornerRadius="9" MouseLeftButtonDown="BarSurface_MouseLeftButtonDown">
+      <Grid Margin="8,2,8,2">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="100" />
+          <ColumnDefinition Width="170" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="60" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="86" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <StackPanel VerticalAlignment="Center">
-          <TextBlock x:Name="NowPlayingStation" Text="Choose a station" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis" />
-          <TextBlock x:Name="NowPlayingTrack" Text="Live radio" Foreground="#666" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+
+        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center"
+                    Margin="0,0,8,0" Cursor="SizeAll"
+                    ToolTip="Drag to move; release near a screen edge to snap">
+          <TextBlock Text="SOMA" Foreground="#F08A62" FontSize="10" FontWeight="Bold" />
+          <TextBlock Text="FM" Foreground="#F3F5F7" FontSize="10" FontWeight="Bold" Margin="1,0,0,0" />
         </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <Button x:Name="PlayButton" Content="Play" Click="Play_Click" IsEnabled="False" />
-          <Button Content="Stop" Click="Stop_Click" IsEnabled="False" x:Name="StopButton" />
+
+        <Border Grid.Column="1" Width="22" Height="22" CornerRadius="5" Background="#1D2125"
+                BorderBrush="#3E464B" BorderThickness="1" Margin="0,0,8,0" ClipToBounds="True">
+          <Image x:Name="NowPlayingArtwork" Stretch="UniformToFill" />
+        </Border>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0">
+          <TextBlock x:Name="NowPlayingStation" Text="Choose a station" Foreground="#F3F5F7"
+                     FontWeight="SemiBold" FontSize="11" TextTrimming="CharacterEllipsis" />
+          <TextBlock x:Name="NowPlayingTrack" Text="Live radio" Foreground="#9AA3A9"
+                     FontSize="9" Margin="0,1,0,0" TextTrimming="CharacterEllipsis" />
         </StackPanel>
+
+        <Border Grid.Column="3" Height="18" Padding="3,1" Margin="0,0,8,0"
+                Background="#171B1D" CornerRadius="4" VerticalAlignment="Center">
+          <UniformGrid x:Name="VisualizerBars" Rows="1" Columns="12" />
+        </Border>
+
+        <ComboBox x:Name="StationPicker" Grid.Column="4" Height="22" Width="170" VerticalAlignment="Center"
+                  Margin="0,0,8,0" Background="#171B1D" Foreground="#F3F5F7"
+                  BorderBrush="#3E464B" BorderThickness="1" SelectionChanged="StationPicker_SelectionChanged"
+                  ToolTip="Choose a SomaFM station" Padding="6,2,20,2">
+          <ComboBox.Template>
+            <ControlTemplate TargetType="ComboBox">
+              <Grid>
+                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" />
+                <ContentPresenter Margin="6,1,24,1" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                  IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}"
+                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                  ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" />
+                <ToggleButton Width="22" HorizontalAlignment="Right" Focusable="False" ClickMode="Press"
+                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                              Background="Transparent" BorderThickness="0">
+                  <ToggleButton.Template>
+                    <ControlTemplate TargetType="ToggleButton">
+                      <Border Background="Transparent">
+                        <Path Data="M 0 0 L 4 4 L 8 0 Z" Fill="#C7CDD1"
+                              HorizontalAlignment="Center" VerticalAlignment="Center" />
+                      </Border>
+                    </ControlTemplate>
+                  </ToggleButton.Template>
+                </ToggleButton>
+                <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False"
+                       IsOpen="{TemplateBinding IsDropDownOpen}" PopupAnimation="Fade">
+                  <Border Background="#171B1D" BorderBrush="#3E464B" BorderThickness="1"
+                          MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                          MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                    <ScrollViewer SnapsToDevicePixels="True">
+                      <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                    </ScrollViewer>
+                  </Border>
+                </Popup>
+              </Grid>
+            </ControlTemplate>
+          </ComboBox.Template>
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal" Height="22" VerticalAlignment="Center">
+                <Border Width="16" Height="16" CornerRadius="3" Background="#21272B"
+                        ClipToBounds="True" Margin="0,0,6,0">
+                  <Image Source="{Binding ImageUrl}" Stretch="UniformToFill" />
+                </Border>
+                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="10" Foreground="#F3F5F7" />
+              </StackPanel>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Button x:Name="PlayButton" Grid.Column="5" Content="Play" Click="Play_Click" IsEnabled="False"
+          Foreground="#F08A62" Background="#000000" BorderBrush="#000000" BorderThickness="1"
+                Padding="10,2" FontWeight="SemiBold" FontSize="9" Height="22"
+          VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource PlayButtonStyle}" />
+
+        <TextBlock x:Name="ListeningTimeLabel" Grid.Column="6" Text="00:00:00"
+                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Foreground="#C7CDD1" FontSize="9" FontWeight="SemiBold" Margin="0,0,8,0" />
+
+        <Button x:Name="FavoriteButton" Grid.Column="7" Content="☆" Click="FavoriteButton_Click"
+          Width="24" Height="24" Padding="0" VerticalAlignment="Center"
+                Foreground="#D7DBDE" Background="Transparent" BorderThickness="0"
+          FontFamily="Segoe UI Symbol" FontSize="18" FontWeight="Bold"
+          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+          ToolTip="Favorite station" Margin="0,0,8,0" />
+
+        <Slider x:Name="VolumeSlider" Grid.Column="8" Minimum="0" Maximum="100" Value="80"
+                VerticalAlignment="Center" Width="88" Height="16" Margin="0,0,8,0"
+                ToolTip="Volume" ValueChanged="VolumeSlider_ValueChanged" />
+
+        <Button Grid.Column="9" Content="×" Click="HideToTray_Click" Width="18" Height="18"
+                VerticalAlignment="Center" Foreground="#A8B1AF" Background="Transparent"
+                BorderThickness="0" FontSize="14" ToolTip="Hide to notification area" />
       </Grid>
     </Border>
-    <DockPanel Grid.Row="2" Margin="0,0,0,10">
-      <TextBlock DockPanel.Dock="Left" Text="Volume" VerticalAlignment="Center" Margin="0,0,8,0" />
-      <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="80" VerticalAlignment="Center" ValueChanged="VolumeSlider_ValueChanged" />
-    </DockPanel>
-    <TextBox Grid.Row="3" x:Name="SearchBox" Margin="0,0,0,10" Padding="8" ToolTip="Search station name, genre, or description" TextChanged="SearchBox_TextChanged" />
-    <ListBox Grid.Row="4" x:Name="StationList" BorderThickness="0" Background="Transparent" SelectionChanged="StationList_SelectionChanged">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <Grid Margin="2,4">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel>
-              <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
-              <TextBlock Text="{Binding Genre}" FontSize="12" Foreground="#666" />
-            </StackPanel>
-            <TextBlock Grid.Column="1" Text="{Binding Bitrate, StringFormat={}{0} kbps}" Foreground="#666" VerticalAlignment="Center" />
-          </Grid>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-    <TextBlock Grid.Row="5" x:Name="MessageText" Foreground="#A12A22" Margin="0,8,0,0" TextWrapping="Wrap" />
   </Grid>
 </Window>

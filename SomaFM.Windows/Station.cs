@@ -5,5 +5,6 @@ public sealed record Station(
     string Title,
     string Description,
     string Genre,
+    string ImageUrl,
     int Bitrate,
     string StreamUrl);

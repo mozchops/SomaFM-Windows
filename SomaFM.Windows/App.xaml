@@ -3,12 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
   <Application.Resources>
-    <SolidColorBrush x:Key="AccentBrush" Color="#D83B32" />
-    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFDFC" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#F08A62" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#101214" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#171B1D" />
+
     <Style TargetType="Button">
-      <Setter Property="Padding" Value="10,6" />
-      <Setter Property="Margin" Value="2" />
+      <Setter Property="Padding" Value="8,3" />
+      <Setter Property="Margin" Value="1" />
       <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Background" Value="#1C2023" />
+      <Setter Property="Foreground" Value="#F3F5F7" />
+      <Setter Property="BorderBrush" Value="#3A4045" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style TargetType="ComboBox">
+      <Setter Property="Background" Value="#171B1D" />
+      <Setter Property="BorderBrush" Value="#3A4045" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="#F3F5F7" />
+      <Setter Property="Padding" Value="6,2,22,2" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Background" Value="#171B1D" />
+      <Setter Property="Foreground" Value="#F3F5F7" />
+      <Setter Property="Padding" Value="6,4" />
+    </Style>
+
+    <Style TargetType="Slider">
+      <Setter Property="Background" Value="#1C2023" />
     </Style>
   </Application.Resources>
 </Application>
