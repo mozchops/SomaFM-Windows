@@ -1,0 +1,14 @@
+<Application x:Class="SomaFM.Windows.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+  <Application.Resources>
+    <SolidColorBrush x:Key="AccentBrush" Color="#D83B32" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFDFC" />
+    <Style TargetType="Button">
+      <Setter Property="Padding" Value="10,6" />
+      <Setter Property="Margin" Value="2" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+  </Application.Resources>
+</Application>
