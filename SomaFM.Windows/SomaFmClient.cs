@@ -64,26 +64,27 @@ public sealed class SomaFmClient
     private static async Task<string?> FindStreamAsync(string id,
         IEnumerable<(string Url, string Quality)> playlists, CancellationToken cancellationToken)
     {
+        var candidates = new List<string>();
         foreach (var playlist in playlists)
         {
             try
             {
                 var text = await Http.GetStringAsync(playlist.Url, cancellationToken);
-                var streamUrl = text.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                candidates.AddRange(text.Split('\n', StringSplitOptions.RemoveEmptyEntries)
                     .Select(line => line.Trim())
                     .Where(line => line.StartsWith("File", StringComparison.OrdinalIgnoreCase))
                     .Select(line => line.Split('=', 2).Last().Trim())
-                    .Where(url => IsValidStreamUrl(url, id))
-                    .OrderByDescending(ParseBitrate)
-                    .FirstOrDefault();
-                if (streamUrl is not null)
-                    return streamUrl;
+                    .Where(url => IsValidStreamUrl(url, id)));
             }
             catch (HttpRequestException)
             {
             }
         }
-        return null;
+        // MP3 decodes at full quality with the built-in Windows decoder; HE-AAC does not.
+        return candidates
+            .OrderByDescending(url => url.Contains("mp3", StringComparison.OrdinalIgnoreCase))
+            .ThenByDescending(ParseBitrate)
+            .FirstOrDefault();
     }
 
     private static bool IsValidStreamUrl(string value, string id)
