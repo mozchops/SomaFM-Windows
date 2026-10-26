@@ -1,15 +1,69 @@
 # SomaFM for Windows
 
-An independent Windows client for SomaFM internet radio. It runs as a compact always-on-top player bar with station artwork, live track metadata, and an audio-spectrum visualizer.
+A compact, always-on-top Windows player bar for [SomaFM](https://somafm.com) internet radio, with station artwork, live track info and an audio-spectrum visualizer.
 
-Drag anywhere on the bar to reposition it; releasing it near the top or either side of the screen snaps it to that edge. Middle-click centres it horizontally, right-click toggles play/pause, and the edges resize it (elements drop away as it narrows). Left-click the visualizer to cycle colour palettes, and left-click the playtime to switch between session and all-time totals. The `×` button exits the app; `_` hides the bar to the notification area.
+> **Unofficial.** This is an independent app. It is not made, endorsed or supported by SomaFM.
 
-Click the station name to open the station picker: type to filter, Enter plays the top match, right-click a station to favourite it. Each station shows its stream type and bitrate (for example `MP3 128k`). The best-quality MP3 stream is used, since Windows Media Foundation decodes it at full quality. Windows decodes the stream and NAudio outputs the audio while the visualizer analyzes the decoded samples, so no separate audio engine is bundled.
+## Download
 
-Use Settings in the player bar or tray menu to sort favourite stations alphabetically or by listening time, toggle the visualizer, choose a colour palette, notify on track change, play the last station at startup, and remember the last size and location. Preferences, volume and placement are saved between launches.
+Get the latest version from the [Releases page](../../releases/latest) if you don't want to build it yourself. Two builds are provided; they are the same app.
 
-Build and run on Windows with the .NET 8 SDK:
+| File | Size | What you need |
+|---|---|---|
+| **SomaFM-Bundle.exe** | about 63 MB | Nothing. Includes everything it needs. Recommended if you are unsure. |
+| **SomaFM-Lite.exe** | under 1 MB | The [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0) (x64) must be installed. Windows does not include it by default. If it is missing, the app will not start. |
+
+Both are 64-bit Windows 10/11 programs. There is no installer: save the file anywhere and run it.
+
+Windows SmartScreen may warn about an unrecognised app, because the files are not code-signed. Choose **More info**, then **Run anyway** if you are happy to proceed.
+
+## Using the app
+
+- **Choose a station:** click the station name to open the picker. Type to filter, press Enter to play the top match, and right-click a station to favourite it. Each station shows its stream type, bitrate and your total listening time.
+- **Play / pause:** right-click anywhere on the bar.
+- **Move:** drag anywhere on the bar. It snaps to screen edges. Middle-click centres it horizontally.
+- **Resize:** drag the left or right edge. Elements drop away as the bar narrows.
+- **Visualizer:** left-click it to cycle colour palettes.
+- **Playtime:** left-click it to switch between this session and all time.
+- **Settings (⚙) or tray menu:** favourite-station sorting (A-Z or most listened; the full list is always A-Z), visualizer on/off, colour palette, track-change notifications, play last station on startup, and remember size and location.
+- **`_`** hides the bar to the notification area; **`×`** exits.
+
+Settings, favourites, volume, playtime and placement are stored in `%APPDATA%\SomaFM-Windows`.
+
+## How it works
+
+The app reads SomaFM's public station catalog, chooses the highest-quality MP3 stream each station offers, and decodes it with Windows Media Foundation. [NAudio](https://github.com/naudio/NAudio) plays the audio and feeds the visualizer. No separate audio engine is bundled.
+
+## Build from source
+
+Requires Windows and the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
 
 ```powershell
 dotnet run --project .\SomaFM.Windows\SomaFM.Windows.csproj
 ```
+
+To publish the two release builds:
+
+```powershell
+# Lite: needs the .NET 8 Desktop Runtime installed
+dotnet publish .\SomaFM.Windows\SomaFM.Windows.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:SatelliteResourceLanguages=en -p:DebugType=none
+
+# Bundle: includes the runtime
+dotnet publish .\SomaFM.Windows\SomaFM.Windows.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:SatelliteResourceLanguages=en -p:DebugType=none
+```
+
+## Streams, content and fair use
+
+This app plays SomaFM's public internet radio streams. All audio, station names, artwork and track information belong to SomaFM and the artists concerned.
+
+**The author has no control over, and takes no responsibility for, the content of the streams.**
+
+SomaFM is a listener-supported, non-commercial radio service. **SomaFM is likely to be very unhappy with anyone trying to make money from this app or from their streams.** The MIT license below does not give you any rights to SomaFM's streams, names, logos or content. Please support them at [somafm.com/support](https://somafm.com/support/).
+
+## Disclaimer
+
+The software is provided "as is", without warranty of any kind, and the author accepts no liability for any damage, loss or other issue arising from its use.
+
+## License
+
+[MIT](LICENSE)
