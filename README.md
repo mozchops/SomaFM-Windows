@@ -62,7 +62,7 @@ SomaFM is a listener-supported, non-commercial radio service. **SomaFM is likely
 
 ## Disclaimer
 
-The software is provided "as is", without warranty of any kind, and the author accepts no liability for any damage, loss or other issue arising from its use.
+This is a hobby project, I initially wrote it just for me as I didn't really like the official web player from SomaFM, but thought others might like it too. The software is provided "as is", without warranty of any kind, and the author accepts no liability for any damage, loss or other issue arising from its use. Lastly, I know I said it already, but please support SomaFM - they provide a great service, with very little interruption.
 
 ## License
 
