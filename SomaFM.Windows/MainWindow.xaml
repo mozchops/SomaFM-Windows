@@ -1,0 +1,63 @@
+<Window x:Class="SomaFM.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SomaFM" Width="460" Height="720" MinWidth="400" MinHeight="560"
+        Background="{StaticResource SurfaceBrush}" Foreground="#202020"
+        Closing="Window_Closing">
+  <Grid Margin="18">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <DockPanel Grid.Row="0" Margin="0,0,0,14">
+      <Button DockPanel.Dock="Right" Content="Refresh" Click="Refresh_Click" />
+      <StackPanel>
+        <TextBlock Text="SomaFM" FontSize="21" FontWeight="SemiBold" />
+        <TextBlock x:Name="StatusText" Text="Connecting to the station catalog…" Foreground="#666" Margin="0,3,0,0" />
+      </StackPanel>
+    </DockPanel>
+    <Border Grid.Row="1" Background="#F1EFEC" CornerRadius="5" Padding="12" Margin="0,0,0,10">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center">
+          <TextBlock x:Name="NowPlayingStation" Text="Choose a station" FontWeight="SemiBold" FontSize="15" TextTrimming="CharacterEllipsis" />
+          <TextBlock x:Name="NowPlayingTrack" Text="Live radio" Foreground="#666" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="PlayButton" Content="Play" Click="Play_Click" IsEnabled="False" />
+          <Button Content="Stop" Click="Stop_Click" IsEnabled="False" x:Name="StopButton" />
+        </StackPanel>
+      </Grid>
+    </Border>
+    <DockPanel Grid.Row="2" Margin="0,0,0,10">
+      <TextBlock DockPanel.Dock="Left" Text="Volume" VerticalAlignment="Center" Margin="0,0,8,0" />
+      <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="80" VerticalAlignment="Center" ValueChanged="VolumeSlider_ValueChanged" />
+    </DockPanel>
+    <TextBox Grid.Row="3" x:Name="SearchBox" Margin="0,0,0,10" Padding="8" ToolTip="Search station name, genre, or description" TextChanged="SearchBox_TextChanged" />
+    <ListBox Grid.Row="4" x:Name="StationList" BorderThickness="0" Background="Transparent" SelectionChanged="StationList_SelectionChanged">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid Margin="2,4">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+              <TextBlock Text="{Binding Genre}" FontSize="12" Foreground="#666" />
+            </StackPanel>
+            <TextBlock Grid.Column="1" Text="{Binding Bitrate, StringFormat={}{0} kbps}" Foreground="#666" VerticalAlignment="Center" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    <TextBlock Grid.Row="5" x:Name="MessageText" Foreground="#A12A22" Margin="0,8,0,0" TextWrapping="Wrap" />
+  </Grid>
+</Window>
