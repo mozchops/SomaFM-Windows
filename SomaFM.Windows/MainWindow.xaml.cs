@@ -338,6 +338,7 @@ public partial class MainWindow : Window
         AccentLogoText.Foreground = accentBrush;
         BarSurface.BorderBrush = (System.Windows.Media.Brush)brushConverter.ConvertFromString(palette.Border)!;
         System.Windows.Application.Current.Resources["AccentBrush"] = accentBrush;
+        System.Windows.Application.Current.Resources["AccentColor"] = ((SolidColorBrush)accentBrush).Color;
         for (var index = 0; index < _visualizerBars.Length; index++)
             _visualizerBars[index].Fill = (System.Windows.Media.Brush)brushConverter.ConvertFromString(
                 palette.VisualizerColors[index % palette.VisualizerColors.Length])!;
@@ -968,15 +969,16 @@ public partial class MainWindow : Window
         if (_currentStation is null)
         {
             FavoriteButton.Content = "☆";
-            FavoriteButton.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(215, 219, 222));
+            FavoriteButton.ClearValue(System.Windows.Controls.Control.ForegroundProperty);
             return;
         }
 
         var isFavorite = _favoriteStationIds.Contains(_currentStation.Id);
         FavoriteButton.Content = isFavorite ? "★" : "☆";
-        FavoriteButton.Foreground = new SolidColorBrush(isFavorite
-            ? System.Windows.Media.Color.FromRgb(255, 196, 84)
-            : System.Windows.Media.Color.FromRgb(215, 219, 222));
+        if (isFavorite)
+            FavoriteButton.SetResourceReference(System.Windows.Controls.Control.ForegroundProperty, "AccentBrush");
+        else
+            FavoriteButton.ClearValue(System.Windows.Controls.Control.ForegroundProperty);
     }
 
     private void UpdateListeningTimeDisplay()

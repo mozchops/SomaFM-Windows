@@ -1,6 +1,7 @@
 <Window x:Class="SomaFM.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SomaFM.Windows"
         Title="SomaFM" Height="40" MinHeight="40" MaxHeight="40"
         SizeChanged="Window_SizeChanged"
         WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True"
@@ -34,6 +35,122 @@
         </Button.Template>
       </Button>
     </DataTemplate>
+    <Style x:Key="IconButtonStyle" TargetType="Button">
+      <Setter Property="Foreground" Value="#C7CDD1" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Focusable" Value="True" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid>
+              <Border x:Name="HoverTint" CornerRadius="5" Background="{DynamicResource AccentBrush}" Opacity="0" />
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="HoverTint" Property="Opacity" Value="0.18" />
+                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter TargetName="HoverTint" Property="Opacity" Value="0.18" />
+                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="HoverTint" Property="Opacity" Value="0.32" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="SliderRepeatButtonStyle" TargetType="RepeatButton">
+      <Setter Property="OverridesDefaultStyle" Value="True" />
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="IsTabStop" Value="False" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="RepeatButton">
+            <Border Background="Transparent" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style x:Key="GlowSliderStyle" TargetType="Slider">
+      <Setter Property="Focusable" Value="True" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Slider">
+            <Grid Background="Transparent" SnapsToDevicePixels="True">
+              <Border Height="4" CornerRadius="2" Background="#2B3034" VerticalAlignment="Center"
+                      Margin="6,0" />
+              <Track x:Name="PART_Track">
+                <Track.DecreaseRepeatButton>
+                  <RepeatButton Command="Slider.DecreaseLarge" Style="{StaticResource SliderRepeatButtonStyle}" />
+                </Track.DecreaseRepeatButton>
+                <Track.IncreaseRepeatButton>
+                  <RepeatButton Command="Slider.IncreaseLarge" Style="{StaticResource SliderRepeatButtonStyle}" />
+                </Track.IncreaseRepeatButton>
+                <Track.Thumb>
+                  <Thumb x:Name="SliderThumb" Width="12" Height="12" Cursor="Hand" OverridesDefaultStyle="True">
+                    <Thumb.Template>
+                      <ControlTemplate TargetType="Thumb">
+                        <Grid Background="Transparent">
+                          <Ellipse x:Name="ThumbDot" Fill="#F3F5F7" Stroke="{DynamicResource AccentBrush}"
+                                   StrokeThickness="2" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                              <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Effect>
+                              <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="10"
+                                                ShadowDepth="0" Opacity="0.85" />
+                            </Ellipse.Effect>
+                          </Ellipse>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                          <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ThumbDot" Property="RenderTransform">
+                              <Setter.Value><ScaleTransform ScaleX="1.2" ScaleY="1.2" /></Setter.Value>
+                            </Setter>
+                          </Trigger>
+                          <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="ThumbDot" Property="RenderTransform">
+                              <Setter.Value><ScaleTransform ScaleX="1.3" ScaleY="1.3" /></Setter.Value>
+                            </Setter>
+                          </Trigger>
+                        </ControlTemplate.Triggers>
+                      </ControlTemplate>
+                    </Thumb.Template>
+                  </Thumb>
+                </Track.Thumb>
+              </Track>
+              <Border x:Name="FillClip" Height="4" HorizontalAlignment="Left" VerticalAlignment="Center"
+                      IsHitTestVisible="False" Margin="6,0" Background="Transparent">
+                <Border.Width>
+                  <MultiBinding>
+                    <MultiBinding.Converter>
+                      <x:Static MemberType="{x:Type local:SliderFillConverter}" Member="Instance" />
+                    </MultiBinding.Converter>
+                    <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <Binding Path="Maximum" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}" />
+                  </MultiBinding>
+                </Border.Width>
+                <Border CornerRadius="2" Background="{DynamicResource AccentBrush}">
+                  <Border.Effect>
+                    <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="8"
+                                      ShadowDepth="0" Opacity="0.6" />
+                  </Border.Effect>
+                </Border>
+              </Border>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
     <Style x:Key="PlayButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
       <Setter Property="Template">
         <Setter.Value>
@@ -161,32 +278,31 @@
 
         <Button x:Name="FavoriteButton" Grid.Column="5" Content="☆" Click="FavoriteButton_Click"
           Width="24" Height="24" Padding="0" VerticalAlignment="Center"
-                Foreground="#D7DBDE" Background="Transparent" BorderThickness="0"
+                Style="{StaticResource IconButtonStyle}"
           FontFamily="Segoe UI Symbol" FontSize="18" FontWeight="Bold"
           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
           ToolTip="Favorite station" Margin="0,0,8,0" />
 
         <Slider x:Name="VolumeSlider" Grid.Column="6" Minimum="0" Maximum="100" Value="80"
-                VerticalAlignment="Center" Width="88" Height="16" Margin="0,0,8,0"
+                VerticalAlignment="Center" Width="88" Height="20" Margin="0,0,8,0" Style="{StaticResource GlowSliderStyle}"
                 ToolTip="Volume" ValueChanged="VolumeSlider_ValueChanged" />
 
         <Button x:Name="OptionsButton" Grid.Column="7" Content="⚙" Click="OptionsButton_Click"
                 Width="24" Height="22" Padding="0" VerticalAlignment="Center"
-                Foreground="#C7CDD1" Background="Transparent" BorderThickness="0"
+                Style="{StaticResource IconButtonStyle}"
                 FontFamily="Segoe UI Symbol" FontSize="14" ToolTip="Options" />
 
         <Button Grid.Column="8" Click="HideToTray_Click" Width="22" Height="22"
-                Padding="0" VerticalAlignment="Center"
+                VerticalAlignment="Center" Style="{StaticResource IconButtonStyle}"
                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                Foreground="#A8B1AF" Background="Transparent" BorderThickness="0"
                 ToolTip="Minimize to notification area">
-          <Rectangle Width="10" Height="2" Fill="#A8B1AF" VerticalAlignment="Bottom" Margin="0,0,0,6" />
+          <Rectangle Width="10" Height="2" VerticalAlignment="Bottom" Margin="0,0,0,6"
+                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
         </Button>
 
         <Button Grid.Column="9" Content="×" Click="ExitApplication_Click" Width="22" Height="22"
-                Margin="2,0,0,0" Padding="0" VerticalAlignment="Center"
+                Margin="2,0,0,0" VerticalAlignment="Center" Style="{StaticResource IconButtonStyle}"
                 HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                Foreground="#A8B1AF" Background="Transparent" BorderThickness="0"
                 FontSize="16" ToolTip="Quit SomaFM" />
       </Grid>
     </Border>

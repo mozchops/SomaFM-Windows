@@ -4,6 +4,7 @@
              StartupUri="MainWindow.xaml">
   <Application.Resources>
     <SolidColorBrush x:Key="AccentBrush" Color="#F08A62" />
+    <Color x:Key="AccentColor">#F08A62</Color>
     <SolidColorBrush x:Key="SurfaceBrush" Color="#101214" />
     <SolidColorBrush x:Key="PanelBrush" Color="#171B1D" />
 
